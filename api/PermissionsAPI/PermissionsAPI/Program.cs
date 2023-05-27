@@ -1,4 +1,6 @@
+using BusinessLogic;
 using Data;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace PermissionsAPI
@@ -10,6 +12,8 @@ namespace PermissionsAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddScoped<IPermissionTypeRepository, PermissionTypeRepository>();
+            builder.Services.AddScoped<IPermissionTypeService, PermissionTypeService>();
             builder.Services.AddDbContext<PermissionsContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer")));
 
             builder.Services.AddControllers();
@@ -19,11 +23,11 @@ namespace PermissionsAPI
 
             var app = builder.Build();
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<PermissionsContext>();
-                context.Database.Migrate();
-            }
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var context = scope.ServiceProvider.GetRequiredService<PermissionsContext>();
+            //    context.Database.Migrate();
+            //}
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
