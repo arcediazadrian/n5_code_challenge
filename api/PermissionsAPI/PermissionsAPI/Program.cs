@@ -13,7 +13,9 @@ namespace PermissionsAPI
 
             // Add services to the container.
             builder.Services.AddScoped<IPermissionTypeRepository, PermissionTypeRepository>();
+            builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
             builder.Services.AddScoped<IPermissionTypeService, PermissionTypeService>();
+            builder.Services.AddScoped<IPermissionService, PermissionService>();
             builder.Services.AddDbContext<PermissionsContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer")));
 
             builder.Services.AddControllers();
@@ -22,12 +24,6 @@ namespace PermissionsAPI
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
-
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var context = scope.ServiceProvider.GetRequiredService<PermissionsContext>();
-            //    context.Database.Migrate();
-            //}
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

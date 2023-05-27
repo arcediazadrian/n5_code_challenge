@@ -33,18 +33,19 @@ namespace BusinessLogic
 
         public async Task DeletePermissionType(int id)
         {
-            await validateIfPermissionTypeExists(id);
+            var permissionType = await GetPermissionTypeById(id);
+            validateIfPermissionTypeExists(permissionType);
 
-            await permissionTypeRepo.DeletePermissionType(id);
+            permissionTypeRepo.DeletePermissionType(permissionType);
             await permissionTypeRepo.Save();
         }
 
         public async Task UpdatePermissionType(int id, PermissionType permissionTypeToUpdate)
         {
-            validateIfPermissionTypeIsValid(permissionTypeToUpdate);
-            await validateIfPermissionTypeExists(id);
+            var permissionType = await GetPermissionTypeById(id);
+            validateIfPermissionTypeExists(permissionType);
 
-            await permissionTypeRepo.UpdatePermissionType(id, permissionTypeToUpdate);
+            permissionTypeRepo.UpdatePermissionType(permissionType, permissionTypeToUpdate);
             await permissionTypeRepo.Save();
         }
 
@@ -54,9 +55,8 @@ namespace BusinessLogic
                 throw new BadRequestException();
         }
 
-        private async Task validateIfPermissionTypeExists(int id)
+        private void validateIfPermissionTypeExists(PermissionType permissionType)
         {
-            var permissionType = await permissionTypeRepo.GetPermissionTypeById(id);
             if (permissionType == null)
                 throw new BadRequestException();
         }

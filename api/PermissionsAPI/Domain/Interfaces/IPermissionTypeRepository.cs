@@ -7,8 +7,8 @@ namespace Domain.Interfaces
         Task<IEnumerable<PermissionType>> GetPermissionTypes();
         Task<PermissionType> GetPermissionTypeById(int id);
         void InsertPermissionType(PermissionType permissionType);
-        Task DeletePermissionType(int id);
-        Task UpdatePermissionType(int id, PermissionType permissionType);
+        void DeletePermissionType(PermissionType permissionType);
+        void UpdatePermissionType(PermissionType currentPermissionType, PermissionType permissionTypeToUpdate);
         Task Save();
     }
 }

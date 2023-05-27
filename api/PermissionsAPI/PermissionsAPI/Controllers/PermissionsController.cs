@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using Domain.Entities;
+using Domain.Exceptions;
+using Domain.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PermissionsAPI.Controllers
 {
@@ -8,36 +9,85 @@ namespace PermissionsAPI.Controllers
     [ApiController]
     public class PermissionsController : ControllerBase
     {
-        // GET: api/<PermissionsController>
+        private IPermissionService permissionService;
+
+        public PermissionsController(IPermissionService permissionService)
+        {
+            this.permissionService = permissionService;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                var permissions = await permissionService.GetPermissions();
+
+                if (permissions == null) { return NotFound(); }
+                return Ok(permissions);
+            }
+            catch (BadRequestException badRequestException)
+            {
+                return BadRequest();
+            }
         }
 
-        // GET api/<PermissionsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            try
+            {
+                var permission = await permissionService.GetPermissionById(id);
+
+                if (permission == null) { return NotFound(); }
+                return Ok(permission);
+            }
+            catch (BadRequestException badRequestException)
+            {
+                return BadRequest();
+            }
         }
 
-        // POST api/<PermissionsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] Permission permission)
         {
+            try
+            {
+                await permissionService.InsertPermission(permission);
+                return Ok();
+            }
+            catch (BadRequestException badRequestException)
+            {
+                return BadRequest();
+            }
         }
 
-        // PUT api/<PermissionsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] Permission permissionToUpdate)
         {
+            try
+            {
+                await permissionService.UpdatePermission(id, permissionToUpdate);
+                return Ok();
+            }
+            catch (BadRequestException badRequestException)
+            {
+                return BadRequest();
+            }
         }
 
-        // DELETE api/<PermissionsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            try
+            {
+                await permissionService.DeletePermission(id);
+                return Ok();
+            }
+            catch (BadRequestException badRequestException)
+            {
+                return BadRequest();
+            }
         }
     }
 }

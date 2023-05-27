@@ -30,17 +30,14 @@ namespace Data
             context.PermissionTypes.Add(permissionType);
         }
 
-        public async Task DeletePermissionType(int id)
+        public void DeletePermissionType(PermissionType permissionType)
         {
-            PermissionType permissionType = await context.PermissionTypes.Where(p => p.Id == id).FirstOrDefaultAsync();
             context.PermissionTypes.Remove(permissionType);
         }
 
-        public async Task UpdatePermissionType(int id, PermissionType permissionTypeToUpdate)
+        public void UpdatePermissionType(PermissionType currentPermissionType, PermissionType permissionTypeToUpdate)
         {
-            var permissionType = await context.PermissionTypes.Where(p => p.Id == id).FirstOrDefaultAsync();
-
-            permissionType.Description = permissionTypeToUpdate.Description;
+            currentPermissionType.Description = permissionTypeToUpdate.Description;
         }
 
         public async Task Save()
