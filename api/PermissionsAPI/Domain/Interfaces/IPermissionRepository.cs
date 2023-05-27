@@ -9,6 +9,5 @@ namespace Domain.Interfaces
         void InsertPermission(Permission permission);
         void DeletePermission(Permission permission);
         void UpdatePermission(Permission currentPermission, Permission permissionToUpdate);
-        Task Save();
     }
 }

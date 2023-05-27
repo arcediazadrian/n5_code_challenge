@@ -12,8 +12,7 @@ namespace PermissionsAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddScoped<IPermissionTypeRepository, PermissionTypeRepository>();
-            builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+            builder.Services.AddScoped<IPermissionUnitOfWork, PermissionUnitOfWork>();
             builder.Services.AddScoped<IPermissionTypeService, PermissionTypeService>();
             builder.Services.AddScoped<IPermissionService, PermissionService>();
             builder.Services.AddDbContext<PermissionsContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer")));

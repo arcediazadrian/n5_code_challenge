@@ -9,6 +9,5 @@ namespace Domain.Interfaces
         void InsertPermissionType(PermissionType permissionType);
         void DeletePermissionType(PermissionType permissionType);
         void UpdatePermissionType(PermissionType currentPermissionType, PermissionType permissionTypeToUpdate);
-        Task Save();
     }
 }

@@ -9,7 +9,7 @@ namespace PermissionsAPI.Controllers
     [ApiController]
     public class PermissionTypesController : ControllerBase
     {
-        private IPermissionTypeService permissionTypeService;
+        private readonly IPermissionTypeService permissionTypeService;
 
         public PermissionTypesController(IPermissionTypeService permissionTypeService)
         {

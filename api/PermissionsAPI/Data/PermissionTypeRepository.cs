@@ -6,7 +6,7 @@ namespace Data
 {
     public class PermissionTypeRepository : IPermissionTypeRepository
     {
-        private PermissionsContext context;
+        private readonly PermissionsContext context;
 
         public PermissionTypeRepository(PermissionsContext context)
         {
@@ -38,12 +38,6 @@ namespace Data
         public void UpdatePermissionType(PermissionType currentPermissionType, PermissionType permissionTypeToUpdate)
         {
             currentPermissionType.Description = permissionTypeToUpdate.Description;
-        }
-
-        public async Task Save()
-        {
-            await context.SaveChangesAsync();
-            return;
         }
     }
 }

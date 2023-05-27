@@ -6,7 +6,7 @@ namespace Data
 {
     public class PermissionRepository: IPermissionRepository
     {
-        private PermissionsContext context;
+        private readonly PermissionsContext context;
 
         public PermissionRepository(PermissionsContext context)
         {
@@ -42,12 +42,6 @@ namespace Data
             currentPermission.EmployeeFirstName = permissionToUpdate.EmployeeFirstName;
             currentPermission.EmployeeLastName = permissionToUpdate.EmployeeLastName;
             currentPermission.PermissionTypeId = permissionToUpdate.PermissionTypeId;
-        }
-
-        public async Task Save()
-        {
-            await context.SaveChangesAsync();
-            return;
         }
     }
 }
