@@ -18,20 +18,22 @@ namespace BusinessLogic
             return await permissionUnitOfWork.PermissionTypeRepository.GetPermissionTypes();
         }
 
-        public async Task<PermissionType> GetPermissionTypeById(int id)
+        public async Task<PermissionType?> GetPermissionTypeById(int id)
         {
             return await permissionUnitOfWork.PermissionTypeRepository.GetPermissionTypeById(id);
         }
 
-        public async Task InsertPermissionType(PermissionType permissionType)
+        public async Task<PermissionType> InsertPermissionType(PermissionType permissionType)
         {
             ValidateIfPermissionTypeIsValid(permissionType);
 
             permissionUnitOfWork.PermissionTypeRepository.InsertPermissionType(permissionType);
             await permissionUnitOfWork.Save();
+
+            return permissionType;
         }
 
-        public async Task DeletePermissionType(int id)
+        public async Task<PermissionType> DeletePermissionType(int id)
         {
             var permissionType = await GetPermissionTypeById(id);
             ValidateIfPermissionTypeExists(permissionType);
@@ -39,35 +41,38 @@ namespace BusinessLogic
 
             permissionUnitOfWork.PermissionTypeRepository.DeletePermissionType(permissionType);
             await permissionUnitOfWork.Save();
+
+            return permissionType;
         }
 
-        public async Task UpdatePermissionType(int id, PermissionType permissionTypeToUpdate)
+        public async Task<PermissionType> UpdatePermissionType(int id, PermissionType permissionTypeToUpdate)
         {
             var permissionType = await GetPermissionTypeById(id);
             ValidateIfPermissionTypeExists(permissionType);
 
             permissionUnitOfWork.PermissionTypeRepository.UpdatePermissionType(permissionType, permissionTypeToUpdate);
             await permissionUnitOfWork.Save();
+
+            return permissionType;
         }
 
         private void ValidateIfPermissionTypeIsValid(PermissionType permissionType)
         {
             if (permissionType == null || permissionType.Description == String.Empty)
-                throw new BadRequestException();
+                throw new ValidationException(message: "Permission Type is not valid.");
         }
 
         private void ValidateIfPermissionTypeExists(PermissionType permissionType)
         {
             if (permissionType == null)
-                throw new BadRequestException();
+                throw new ValidationException(message: "Permission Type does not exist.");
         }
 
         private async Task ValidateIfPermissionTypeIsInUse(int id)
         {
             var permissions = await permissionUnitOfWork.PermissionRepository.GetPermissions();
-            var permissionsUsingPermissionType = permissions.Where(p => p.PermissionTypeId == id);
-            if (permissionsUsingPermissionType != null && permissionsUsingPermissionType.Any())
-                throw new BadRequestException();
+            if (permissions.Any(p => p.PermissionTypeId == id))
+                throw new ValidationException(message: "Permission Type is in use by an existing Permission.");
         }
     }
 }

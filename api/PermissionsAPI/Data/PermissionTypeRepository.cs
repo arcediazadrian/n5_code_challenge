@@ -19,9 +19,9 @@ namespace Data
             return context.PermissionTypes.OrderBy(b => b.Id).ToList();
         }
 
-        public async Task<PermissionType> GetPermissionTypeById(int id)
+        public async Task<PermissionType?> GetPermissionTypeById(int id)
         {
-            var permissionType = await context.PermissionTypes.Where(p => p.Id == id).FirstOrDefaultAsync();
+            var permissionType = await context.PermissionTypes.FirstOrDefaultAsync(p => p.Id == id);
             return permissionType;
         }
 

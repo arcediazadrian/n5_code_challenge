@@ -20,9 +20,9 @@ namespace Data
             return context.Permissions.OrderBy(b => b.Id).ToList();
         }
 
-        public async Task<Permission> GetPermissionById(int id)
+        public async Task<Permission?> GetPermissionById(int id)
         {
-            var permission = await context.Permissions.Where(p => p.Id == id).Include(p => p.PermissionType).FirstOrDefaultAsync();
+            var permission = await context.Permissions.Include(p => p.PermissionType).FirstOrDefaultAsync(p => p.Id == id);
             return permission;
         }
 

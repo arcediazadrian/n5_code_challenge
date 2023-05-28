@@ -2,6 +2,7 @@
 using Domain.Exceptions;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 
 namespace PermissionsAPI.Controllers
 {
@@ -17,23 +18,32 @@ namespace PermissionsAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<Permission>>> Get()
         {
             try
             {
                 var permissions = await permissionService.GetPermissions();
-
-                if (permissions == null) { return NotFound(); }
                 return Ok(permissions);
             }
-            catch (BadRequestException badRequestException)
+            catch (ValidationException validationException)
             {
-                return BadRequest();
+                return BadRequest(validationException.Message);
+            }
+            catch
+            {
+                return Problem();
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Permission>> GetById(int id)
         {
             try
             {
@@ -42,51 +52,76 @@ namespace PermissionsAPI.Controllers
                 if (permission == null) { return NotFound(); }
                 return Ok(permission);
             }
-            catch (BadRequestException badRequestException)
+            catch (ValidationException validationException)
             {
-                return BadRequest();
+                return BadRequest(validationException.Message);
+            }
+            catch
+            {
+                return Problem();
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Permission permission)
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Permission>> Post([FromBody] Permission permission)
         {
             try
             {
-                await permissionService.InsertPermission(permission);
-                return Ok();
+                var createdPermission = await permissionService.InsertPermission(permission);
+                return CreatedAtAction(nameof(GetById), new { id = createdPermission.Id }, createdPermission);
             }
-            catch (BadRequestException badRequestException)
+            catch (ValidationException validationException)
             {
-                return BadRequest();
+                return BadRequest(validationException.Message);
+            }
+            catch
+            {
+                return Problem();
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Permission permissionToUpdate)
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Permission>> Put(int id, [FromBody] Permission permissionToUpdate)
         {
             try
             {
-                await permissionService.UpdatePermission(id, permissionToUpdate);
-                return Ok();
+                var permission = await permissionService.UpdatePermission(id, permissionToUpdate);
+                return Ok(permission);
             }
-            catch (BadRequestException badRequestException)
+            catch (ValidationException validationException)
             {
-                return BadRequest();
+                return BadRequest(validationException.Message);
+            }
+            catch
+            {
+                return Problem();
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Permission>> Delete(int id)
         {
             try
             {
-                await permissionService.DeletePermission(id);
-                return Ok();
+                var permission = await permissionService.DeletePermission(id);
+                return Ok(permission);
             }
-            catch (BadRequestException badRequestException)
+            catch (ValidationException validationException)
             {
-                return BadRequest();
+                return BadRequest(validationException.Message);
+            }
+            catch
+            {
+                return Problem();
             }
         }
     }

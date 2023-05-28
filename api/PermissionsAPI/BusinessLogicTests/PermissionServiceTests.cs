@@ -53,7 +53,7 @@ namespace BusinessLogicTests
             Task act() => service.InsertPermission(permission);
 
             //assert
-            await Assert.ThrowsAsync<BadRequestException>(act);
+            await Assert.ThrowsAsync<ValidationException>(act);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace BusinessLogicTests
             Task act() => service.InsertPermission(permission);
 
             //assert
-            await Assert.ThrowsAsync<BadRequestException>(act);
+            await Assert.ThrowsAsync<ValidationException>(act);
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace BusinessLogicTests
             Task act() => service.InsertPermission(permission);
 
             //assert
-            await Assert.ThrowsAsync<BadRequestException>(act);
+            await Assert.ThrowsAsync<ValidationException>(act);
         }
 
         [Fact]
@@ -111,7 +111,7 @@ namespace BusinessLogicTests
             Task act() => service.InsertPermission(permission);
 
             //assert
-            await Assert.ThrowsAsync<BadRequestException>(act);
+            await Assert.ThrowsAsync<ValidationException>(act);
         }
 
         [Fact]
@@ -131,7 +131,7 @@ namespace BusinessLogicTests
             Task act() => service.UpdatePermission(id, permission);
 
             //assert
-            await Assert.ThrowsAsync<BadRequestException>(act);
+            await Assert.ThrowsAsync<ValidationException>(act);
         }
 
         [Fact]
@@ -145,7 +145,7 @@ namespace BusinessLogicTests
             Task act() => service.DeletePermission(id);
 
             //assert
-            await Assert.ThrowsAsync<BadRequestException>(act);
+            await Assert.ThrowsAsync<ValidationException>(act);
         }
     }
 }
