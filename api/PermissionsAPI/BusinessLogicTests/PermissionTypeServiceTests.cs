@@ -82,14 +82,40 @@ namespace BusinessLogicTests
         {
             //arrange
             int id = 1;
-            PermissionType permissionType = new PermissionType
+            PermissionType permissionTypeToUpdate = new PermissionType
             {
-                Description = String.Empty,
+                Id = id,
+                Description = "Manager",
             };
+
             unitOfWork.Setup(u => u.PermissionTypeRepository.GetPermissionTypeById(id)).Returns(Task.FromResult<PermissionType>(null));
 
             //act
-            Task act() => service.UpdatePermissionType(id, permissionType);
+            Task act() => service.UpdatePermissionType(id, permissionTypeToUpdate);
+
+            //assert
+            await Assert.ThrowsAsync<ValidationException>(act);
+        }
+
+        [Fact]
+        public async void UpdatePermissionType_ShouldFail_IfPermissionTypeIsNotValid()
+        {
+            //arrange
+            int id = 1;
+            PermissionType currentPermissionType = new PermissionType
+            {
+                Id = id,
+                Description = "Manager",
+            };
+            PermissionType permissionTypeToUpdate = new PermissionType
+            {
+                Id = id,
+                Description = String.Empty,
+            };
+            unitOfWork.Setup(u => u.PermissionTypeRepository.GetPermissionTypeById(id)).Returns(Task.FromResult<PermissionType>(currentPermissionType));
+
+            //act
+            Task act() => service.UpdatePermissionType(id, permissionTypeToUpdate);
 
             //assert
             await Assert.ThrowsAsync<ValidationException>(act);

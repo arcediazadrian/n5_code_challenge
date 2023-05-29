@@ -37,8 +37,8 @@ function PermissionsList({ permissions }) {
         }}
       >
         <Box sx={{ width: "60vw" }}>
-          {permissions.map((permission, index) => (
-            <Item key={index}>
+          {permissions.map((permission) => (
+            <Item key={permission.id}>
               <Box
                 sx={{
                   display: "flex",

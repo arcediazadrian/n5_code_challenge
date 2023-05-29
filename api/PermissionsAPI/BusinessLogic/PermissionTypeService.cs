@@ -25,7 +25,7 @@ namespace BusinessLogic
 
         public async Task<PermissionType> InsertPermissionType(PermissionType permissionType)
         {
-            ValidateIfPermissionTypeIsValid(permissionType);
+            ValidatePermissionType(permissionType);
 
             await permissionUnitOfWork.PermissionTypeRepository.InsertPermissionType(permissionType);
 
@@ -47,13 +47,14 @@ namespace BusinessLogic
         {
             var permissionType = await GetPermissionTypeById(id);
             ValidateIfPermissionTypeExists(permissionType);
+            ValidatePermissionType(permissionTypeToUpdate);
 
             await permissionUnitOfWork.PermissionTypeRepository.UpdatePermissionType(permissionType, permissionTypeToUpdate);
 
             return permissionType;
         }
 
-        private void ValidateIfPermissionTypeIsValid(PermissionType permissionType)
+        private void ValidatePermissionType(PermissionType permissionType)
         {
             if (permissionType == null || permissionType.Description == String.Empty)
                 throw new ValidationException(message: "Permission Type is not valid.");

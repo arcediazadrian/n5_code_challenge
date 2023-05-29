@@ -33,7 +33,6 @@ function CreateEditPermission({ refreshPermissions, permissionTypes }) {
   }, []);
 
   const getFormData = async () => {
-    console.log(routeParams);
     if (routeParams && routeParams.permissionId !== "-1") {
       const permissionResult = await axios.get(
         `${process.env.REACT_APP_PERMISSIONS_API_URL}/Permissions/${routeParams.permissionId}`
@@ -211,8 +210,8 @@ function CreateEditPermission({ refreshPermissions, permissionTypes }) {
                 value={permissionType || ""}
                 onChange={(event) => setPermissionType(event.target.value)}
               >
-                {permissionTypes.map((type, index) => (
-                  <MenuItem key={index} value={type.id}>
+                {permissionTypes.map((type) => (
+                  <MenuItem key={type.id} value={type.id}>
                     {type.description}
                   </MenuItem>
                 ))}

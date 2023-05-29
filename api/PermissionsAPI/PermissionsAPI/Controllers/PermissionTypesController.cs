@@ -91,8 +91,8 @@ namespace PermissionsAPI.Controllers
         {
             try
             {
-                await permissionTypeService.UpdatePermissionType(id, permissionTypeToUpdate);
-                return Ok();
+                var updatedPermissionType = await permissionTypeService.UpdatePermissionType(id, permissionTypeToUpdate);
+                return Ok(updatedPermissionType);
             }
             catch (ValidationException validationException)
             {
@@ -112,8 +112,8 @@ namespace PermissionsAPI.Controllers
         {
             try
             {
-                await permissionTypeService.DeletePermissionType(id);
-                return Ok();
+                var deletedPermissionType = await permissionTypeService.DeletePermissionType(id);
+                return Ok(deletedPermissionType);
             }
             catch (ValidationException validationException)
             {
