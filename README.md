@@ -16,6 +16,7 @@
 
 ## Notes
 - Could have done a better job at exception handling by centrilizing it in one filter or using .Net Core middlewares, didn't find the time to do so.
+- A good improvement would have been to dockerize the app, didn't find the time to do so.
 
 ## Permission List
 ![image](https://github.com/arcediazadrian/n5_code_challenge/assets/26807808/569655e7-afbc-4270-8f0c-7a2e1f833b08)
