@@ -28,8 +28,7 @@ namespace BusinessLogic
             ValidatePermission(permission);
             await ValidateIfPermissionTypeExists(permission.PermissionTypeId);
 
-            permissionUnitOfWork.PermissionRepository.InsertPermission(permission);
-            await permissionUnitOfWork.Save();
+            await permissionUnitOfWork.PermissionRepository.InsertPermission(permission);
 
             return permission;
         }
@@ -39,8 +38,7 @@ namespace BusinessLogic
             var permission = await permissionUnitOfWork.PermissionRepository.GetPermissionById(id);
             ValidateIfPermissionExists(permission);
 
-            permissionUnitOfWork.PermissionRepository.DeletePermission(permission);
-            await permissionUnitOfWork.Save();
+            await permissionUnitOfWork.PermissionRepository.DeletePermission(permission);
 
             return permission;
         }
@@ -52,8 +50,7 @@ namespace BusinessLogic
             ValidatePermission(permissionToUpdate);
             await ValidateIfPermissionTypeExists(permissionToUpdate.PermissionTypeId);
 
-            permissionUnitOfWork.PermissionRepository.UpdatePermission(currentPermission, permissionToUpdate);
-            await permissionUnitOfWork.Save();
+            await permissionUnitOfWork.PermissionRepository.UpdatePermission(currentPermission, permissionToUpdate);
 
             return currentPermission;
         }

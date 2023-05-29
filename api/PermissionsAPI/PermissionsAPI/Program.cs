@@ -16,6 +16,7 @@ namespace PermissionsAPI
             builder.Services.AddScoped<IPermissionTypeService, PermissionTypeService>();
             builder.Services.AddScoped<IPermissionService, PermissionService>();
             builder.Services.AddDbContext<PermissionsContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer")));
+            builder.Services.AddElasticSearch(builder.Configuration);
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,4 +1,5 @@
 ﻿using Domain.Interfaces;
+using Nest;
 
 namespace Data
 {
@@ -8,18 +9,14 @@ namespace Data
         public IPermissionTypeRepository PermissionTypeRepository { get; set; }
 
         private readonly PermissionsContext context;
+        private readonly IElasticClient elasticClient;
 
-        public PermissionUnitOfWork(PermissionsContext context)
+        public PermissionUnitOfWork(PermissionsContext context, IElasticClient elasticClient)
         {
             this.context = context;
-            this.PermissionRepository = new PermissionRepository(context);
+            this.elasticClient = elasticClient;
+            this.PermissionRepository = new PermissionRepository(context, elasticClient);
             this.PermissionTypeRepository = new PermissionTypeRepository(context);
-        }
-
-        public async Task Save()
-        {
-            await context.SaveChangesAsync();
-            return;
         }
     }
 }

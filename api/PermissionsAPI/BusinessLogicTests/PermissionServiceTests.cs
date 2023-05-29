@@ -34,7 +34,7 @@ namespace BusinessLogicTests
             await service.InsertPermission(permission);
 
             //assert
-            unitOfWork.Verify(u => u.Save(), Times.Once);
+            unitOfWork.Verify(u => u.PermissionRepository.InsertPermission(permission), Times.Once);
         }
 
         [Fact]

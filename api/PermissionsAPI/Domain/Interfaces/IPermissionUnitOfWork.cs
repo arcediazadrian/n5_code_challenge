@@ -4,6 +4,5 @@
     {
         IPermissionRepository PermissionRepository { get; }
         IPermissionTypeRepository PermissionTypeRepository { get; }
-        Task Save();
     }
 }

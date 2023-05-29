@@ -1,47 +1,59 @@
 ﻿using Domain.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Nest;
 
 namespace Data
 {
-    public class PermissionRepository: IPermissionRepository
+    public class PermissionRepository : IPermissionRepository
     {
         private readonly PermissionsContext context;
+        private readonly IElasticClient elasticClient;
 
-        public PermissionRepository(PermissionsContext context)
+        public PermissionRepository(PermissionsContext context, IElasticClient elasticClient)
         {
             this.context = context;
+            this.elasticClient = elasticClient;
         }
 
         public async Task<IEnumerable<Permission>> GetPermissions()
         {
-            await context.Permissions.Include(p => p.PermissionType).LoadAsync();
-
-            return context.Permissions.OrderBy(b => b.Id).ToList();
+            var result = await elasticClient.SearchAsync<Permission>(s => s.Size(100));
+            return result.Documents.ToList();
         }
 
         public async Task<Permission?> GetPermissionById(int id)
         {
-            var permission = await context.Permissions.Include(p => p.PermissionType).FirstOrDefaultAsync(p => p.Id == id);
-            return permission;
+            var result = await elasticClient.SearchAsync<Permission>(
+                s => s.Size(1).Query(q => q.Match(m => m.Field(f => f.Id).Query(id.ToString()))));
+            return result.Documents.ToList().First();
         }
 
-        public void InsertPermission(Permission permission)
+        public async Task InsertPermission(Permission permission)
         {
             permission.GrantedDate = DateTime.Now;
             context.Permissions.Add(permission);
+            await context.SaveChangesAsync();
+
+            await elasticClient.IndexDocumentAsync(permission);
         }
 
-        public void DeletePermission(Permission permission)
+        public async Task DeletePermission(Permission permission)
         {
             context.Permissions.Remove(permission);
+            await context.SaveChangesAsync();
+
+            await elasticClient.DeleteAsync<Permission>(permission);
         }
 
-        public void UpdatePermission(Permission currentPermission, Permission permissionToUpdate)
+        public async Task UpdatePermission(Permission currentPermission, Permission permissionToUpdate)
         {
             currentPermission.EmployeeFirstName = permissionToUpdate.EmployeeFirstName;
             currentPermission.EmployeeLastName = permissionToUpdate.EmployeeLastName;
             currentPermission.PermissionTypeId = permissionToUpdate.PermissionTypeId;
+            await context.SaveChangesAsync();
+
+            await elasticClient.UpdateAsync<Permission>(currentPermission.Id, p => p.Index("permissions").Doc(currentPermission));
         }
     }
 }

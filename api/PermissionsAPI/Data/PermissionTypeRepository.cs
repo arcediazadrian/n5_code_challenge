@@ -25,19 +25,22 @@ namespace Data
             return permissionType;
         }
 
-        public void InsertPermissionType(PermissionType permissionType)
+        public async Task InsertPermissionType(PermissionType permissionType)
         {
             context.PermissionTypes.Add(permissionType);
+            await context.SaveChangesAsync();
         }
 
-        public void DeletePermissionType(PermissionType permissionType)
+        public async Task DeletePermissionType(PermissionType permissionType)
         {
             context.PermissionTypes.Remove(permissionType);
+            await context.SaveChangesAsync();
         }
 
-        public void UpdatePermissionType(PermissionType currentPermissionType, PermissionType permissionTypeToUpdate)
+        public async Task UpdatePermissionType(PermissionType currentPermissionType, PermissionType permissionTypeToUpdate)
         {
             currentPermissionType.Description = permissionTypeToUpdate.Description;
+            await context.SaveChangesAsync();
         }
     }
 }

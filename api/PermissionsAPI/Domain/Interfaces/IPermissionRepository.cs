@@ -6,8 +6,8 @@ namespace Domain.Interfaces
     {
         Task<IEnumerable<Permission>> GetPermissions();
         Task<Permission?> GetPermissionById(int id);
-        void InsertPermission(Permission permission);
-        void DeletePermission(Permission permission);
-        void UpdatePermission(Permission currentPermission, Permission permissionToUpdate);
+        Task InsertPermission(Permission permission);
+        Task DeletePermission(Permission permission);
+        Task UpdatePermission(Permission currentPermission, Permission permissionToUpdate);
     }
 }
