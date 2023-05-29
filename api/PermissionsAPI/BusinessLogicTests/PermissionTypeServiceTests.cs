@@ -28,10 +28,10 @@ namespace BusinessLogicTests
             unitOfWork.Setup(u => u.PermissionTypeRepository.InsertPermissionType(permissionType));
 
             //act
-            await service.InsertPermissionType(permissionType);
+            var createdPermissionType = await service.InsertPermissionType(permissionType);
 
             //assert
-            unitOfWork.Verify(u => u.PermissionTypeRepository.InsertPermissionType(permissionType), Times.Once);
+            Assert.NotNull(createdPermissionType);
         }
 
         [Fact]
@@ -52,6 +52,32 @@ namespace BusinessLogicTests
         }
 
         [Fact]
+        public async void UpdatePermissionType_ShouldSucceed()
+        {
+            //arrange
+            int id = 1;
+            PermissionType currentPermissionType = new PermissionType
+            {
+                Id = id,
+                Description = "Administrator",
+            };
+            PermissionType permissionTypeToUpdate = new PermissionType
+            {
+                Id = id,
+                Description = "Employee",
+            };
+
+            unitOfWork.Setup(u => u.PermissionTypeRepository.GetPermissionTypeById(id)).Returns(Task.FromResult(currentPermissionType));
+            unitOfWork.Setup(u => u.PermissionTypeRepository.UpdatePermissionType(currentPermissionType, permissionTypeToUpdate)).Returns(Task.FromResult(permissionTypeToUpdate));
+
+            //act
+            var updatedPermissionType = await service.UpdatePermissionType(id, permissionTypeToUpdate);
+
+            //assert
+            Assert.NotNull(updatedPermissionType);
+        }
+
+        [Fact]
         public async void UpdatePermissionType_ShouldFail_WhenPermissionTypeDoesNotExist()
         {
             //arrange
@@ -67,6 +93,28 @@ namespace BusinessLogicTests
 
             //assert
             await Assert.ThrowsAsync<ValidationException>(act);
+        }
+
+        [Fact]
+        public async void DeletePermissionType_ShouldSucceed()
+        {
+            //arrange
+            int id = 1;
+            PermissionType permissionType = new PermissionType
+            {
+                Id = id,
+                Description = "Administrator",
+            };
+
+            unitOfWork.Setup(u => u.PermissionTypeRepository.GetPermissionTypeById(id)).Returns(Task.FromResult(permissionType));
+            unitOfWork.Setup(u => u.PermissionRepository.GetPermissions()).Returns(Task.FromResult<IEnumerable<Permission>>(new List<Permission>()));
+            unitOfWork.Setup(u => u.PermissionTypeRepository.DeletePermissionType(permissionType)).Returns(Task.FromResult(permissionType));
+
+            //act
+            var deletedPermissionType = await service.DeletePermissionType(id);
+
+            //assert
+            Assert.NotNull(deletedPermissionType);
         }
 
         [Fact]

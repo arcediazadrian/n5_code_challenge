@@ -28,13 +28,13 @@ namespace BusinessLogicTests
                 PermissionTypeId = 1,
             };
             unitOfWork.Setup(u => u.PermissionRepository.InsertPermission(permission));
-            unitOfWork.Setup(u => u.PermissionTypeRepository.GetPermissionTypeById(permission.PermissionTypeId)).Returns(Task.FromResult<PermissionType>(new PermissionType { Id = 1, Description = "Administrator" }));
+            unitOfWork.Setup(u => u.PermissionTypeRepository.GetPermissionTypeById(permission.PermissionTypeId)).Returns(Task.FromResult(new PermissionType { Id = 1, Description = "Administrator" }));
 
             //act
-            await service.InsertPermission(permission);
+            var createdPermission = await service.InsertPermission(permission);
 
             //assert
-            unitOfWork.Verify(u => u.PermissionRepository.InsertPermission(permission), Times.Once);
+            Assert.NotNull(createdPermission);
         }
 
         [Fact]
@@ -115,6 +115,38 @@ namespace BusinessLogicTests
         }
 
         [Fact]
+        public async void UpdatePermission_ShouldSucceed()
+        {
+            //arrange
+            int id = 1;
+            Permission currentPermission = new Permission
+            {
+                Id = id,
+                EmployeeFirstName = "Adrian",
+                EmployeeLastName = "Arce",
+                PermissionTypeId = 1,
+            };
+            Permission permissionToUpdate = new Permission
+            {
+                Id = id,
+                EmployeeFirstName = "Adrian",
+                EmployeeLastName = "Arze",
+                PermissionTypeId = 2,
+            };
+
+            unitOfWork.Setup(u => u.PermissionRepository.GetPermissionById(id)).Returns(Task.FromResult<Permission>(currentPermission));
+            unitOfWork.Setup(u => u.PermissionTypeRepository.GetPermissionTypeById(It.IsAny<int>())).Returns(Task.FromResult(new PermissionType() { Description = "Manager" }));
+            unitOfWork.Setup(u => u.PermissionRepository.UpdatePermission(currentPermission, permissionToUpdate)).Returns(Task.FromResult<Permission>(permissionToUpdate));
+            
+
+            //act
+            var updatedPermission = await service.UpdatePermission(id, permissionToUpdate);
+
+            //assert
+            Assert.NotNull(updatedPermission);
+        }
+
+        [Fact]
         public async void UpdatePermission_ShouldFail_WhenPermissionDoesNotExist()
         {
             //arrange
@@ -132,6 +164,78 @@ namespace BusinessLogicTests
 
             //assert
             await Assert.ThrowsAsync<ValidationException>(act);
+        }
+
+        [Fact]
+        public async void UpdatePermission_ShouldFail_WhenPermissionToUpdateIsInvalid()
+        {
+            //arrange
+            int id = 1;
+            Permission permission = new Permission
+            {
+                EmployeeFirstName = String.Empty,
+                EmployeeLastName = String.Empty,
+                PermissionTypeId = 1,
+            };
+            unitOfWork.Setup(u => u.PermissionRepository.GetPermissionById(id)).Returns(Task.FromResult<Permission>(null));
+
+            //act
+            Task act() => service.UpdatePermission(id, permission);
+
+            //assert
+            await Assert.ThrowsAsync<ValidationException>(act);
+        }
+
+        [Fact]
+        public async void UpdatePermission_ShouldFail_WhenPermissionTypeDoesNotExist()
+        {
+            //arrange
+            int id = 1;
+            Permission currentPermission = new Permission
+            {
+                Id = id,
+                EmployeeFirstName = "Adrian",
+                EmployeeLastName = "Arce",
+                PermissionTypeId = 1,
+            };
+            Permission permissionToUpdate = new Permission
+            {
+                Id = id,
+                EmployeeFirstName = "Adrian",
+                EmployeeLastName = "Arze",
+                PermissionTypeId = 999,
+            };
+
+            unitOfWork.Setup(u => u.PermissionRepository.GetPermissionById(id)).Returns(Task.FromResult<Permission>(currentPermission));
+            unitOfWork.Setup(u => u.PermissionTypeRepository.GetPermissionTypeById(permissionToUpdate.PermissionTypeId)).Returns(Task.FromResult<PermissionType>(null));
+
+
+            //act
+            Task act() => service.UpdatePermission(id, permissionToUpdate);
+
+            //assert
+            await Assert.ThrowsAsync<ValidationException>(act);
+        }
+
+        [Fact]
+        public async void DeletePermission_ShouldSucceed()
+        {
+            //arrange
+            int id = 1;
+            Permission permission = new Permission
+            {
+                Id = id,
+                EmployeeFirstName = "Adrian",
+                EmployeeLastName = "Arce",
+                PermissionTypeId = 1,
+            };
+            unitOfWork.Setup(u => u.PermissionRepository.GetPermissionById(id)).Returns(Task.FromResult<Permission>(permission));
+
+            //act
+            var deletedPermission = await service.DeletePermission(id);
+
+            //assert
+            Assert.NotNull(deletedPermission);
         }
 
         [Fact]
