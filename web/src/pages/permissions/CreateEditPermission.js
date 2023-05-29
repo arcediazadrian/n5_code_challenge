@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 
-import { MenuItem, TextField, Button } from '@mui/material';
-import { Box } from '@mui/system';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Select from '@mui/material/Select';
-import { FormControl, InputLabel, FormHelperText } from '@mui/material';
-import Stack from '@mui/material/Stack';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import { MenuItem, TextField, Button } from "@mui/material";
+import { Box } from "@mui/system";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Select from "@mui/material/Select";
+import { FormControl, InputLabel, FormHelperText } from "@mui/material";
+import Stack from "@mui/material/Stack";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import { useParams } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 
-import Layout from '../../components/Layout';
+import Layout from "../../components/Layout";
 
 function CreateEditPermission({ refreshPermissions, permissionTypes }) {
   const [showSnackBar, setShowSnackBar] = useState(false);
@@ -30,51 +30,77 @@ function CreateEditPermission({ refreshPermissions, permissionTypes }) {
 
   useEffect(() => {
     getFormData();
-  }, [])
+  }, []);
 
   const getFormData = async () => {
-    if (routeParams && routeParams.permissionId !== -1) {
-      const permissionResult = await axios.get(`${process.env.REACT_APP_PERMISSIONS_API_URL}/Permissions/${routeParams.permissionId}`);
+    console.log(routeParams);
+    if (routeParams && routeParams.permissionId !== "-1") {
+      const permissionResult = await axios.get(
+        `${process.env.REACT_APP_PERMISSIONS_API_URL}/Permissions/${routeParams.permissionId}`
+      );
       setEmployeeFirstName(permissionResult.data.employeeFirstName);
       setEmployeeLastName(permissionResult.data.employeeLastName);
       setPermissionType(permissionResult.data.permissionTypeId);
     }
-  }
+  };
 
   const save = () => {
-    let isFormValid = true
-    if (employeeFirstName === null || employeeFirstName === undefined || employeeFirstName === "") {
+    let isFormValid = true;
+    if (
+      employeeFirstName === null ||
+      employeeFirstName === undefined ||
+      employeeFirstName === ""
+    ) {
       isFormValid = false;
-      setEmployeeFirstNameError(true)
+      setEmployeeFirstNameError(true);
     } else {
-      setEmployeeFirstNameError(false)
+      setEmployeeFirstNameError(false);
     }
 
-    if (employeeLastName === null || employeeLastName === undefined || employeeLastName === "") {
+    if (
+      employeeLastName === null ||
+      employeeLastName === undefined ||
+      employeeLastName === ""
+    ) {
       isFormValid = false;
-      setEmployeeLastNameError(true)
+      setEmployeeLastNameError(true);
     } else {
-      setEmployeeLastNameError(false)
+      setEmployeeLastNameError(false);
     }
 
-    if (permissionType === null || permissionType === undefined || permissionType === "") {
+    if (
+      permissionType === null ||
+      permissionType === undefined ||
+      permissionType === ""
+    ) {
       isFormValid = false;
-      setPermissionTypeError(true)
+      setPermissionTypeError(true);
     } else {
-      setPermissionTypeError(false)
+      setPermissionTypeError(false);
     }
 
     if (isFormValid) {
-      savePermission({ id: parseInt(routeParams.permissionId), employeeFirstName, employeeLastName, permissionTypeId: permissionType })
+      savePermission({
+        id: parseInt(routeParams.permissionId),
+        employeeFirstName,
+        employeeLastName,
+        permissionTypeId: permissionType,
+      });
     }
-  }
+  };
 
   const savePermission = async (permission) => {
     try {
       if (permission.id === -1) {
-        await axios.post(`${process.env.REACT_APP_PERMISSIONS_API_URL}/Permissions`, { ...permission, id: 0 });
+        await axios.post(
+          `${process.env.REACT_APP_PERMISSIONS_API_URL}/Permissions`,
+          { ...permission, id: 0 }
+        );
       } else {
-        await axios.put(`${process.env.REACT_APP_PERMISSIONS_API_URL}/Permissions/${permission.id}`, permission);
+        await axios.put(
+          `${process.env.REACT_APP_PERMISSIONS_API_URL}/Permissions/${permission.id}`,
+          permission
+        );
       }
 
       await refreshPermissions();
@@ -85,11 +111,13 @@ function CreateEditPermission({ refreshPermissions, permissionTypes }) {
     } finally {
       setShowSnackBar(true);
     }
-  }
+  };
 
   const deletePermission = async (id) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_PERMISSIONS_API_URL}/Permissions/${id}`);
+      await axios.delete(
+        `${process.env.REACT_APP_PERMISSIONS_API_URL}/Permissions/${id}`
+      );
       await refreshPermissions();
 
       setShowSnackBarAsError(false);
@@ -98,58 +126,110 @@ function CreateEditPermission({ refreshPermissions, permissionTypes }) {
     } finally {
       setShowSnackBar(true);
     }
-
-  }
+  };
 
   const handleClose = (_, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
     setShowSnackBar(false);
   };
 
-  const iconComponent = routeParams && routeParams.permissionId !== -1 ? (<DeleteIcon />) : null
+  const iconComponent =
+    routeParams && routeParams.permissionId !== -1 ? <DeleteIcon /> : null;
   const iconAction = () => deletePermission(routeParams.permissionId);
 
   return (
-    <Layout title="Permissions" iconComponent={iconComponent} iconAction={iconAction}>
-      <Stack sx={{ width: '100%' }}>
-        <Snackbar open={showSnackBar} autoHideDuration={2000} onClose={handleClose}>
-          {showSnackBarAsError ?
-            (<Alert elevation={6} variant="filled" onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+    <Layout
+      title="Permissions"
+      iconComponent={iconComponent}
+      iconAction={iconAction}
+    >
+      <Stack sx={{ width: "100%" }}>
+        <Snackbar
+          open={showSnackBar}
+          autoHideDuration={2000}
+          onClose={handleClose}
+        >
+          {showSnackBarAsError ? (
+            <Alert
+              elevation={6}
+              variant="filled"
+              onClose={handleClose}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
               Operation was unsuccessful!
-            </Alert>)
-            : (<Alert elevation={6} variant="filled" onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+            </Alert>
+          ) : (
+            <Alert
+              elevation={6}
+              variant="filled"
+              onClose={handleClose}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
               Operation was successful!
-            </Alert>)}
+            </Alert>
+          )}
         </Snackbar>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'stretch' }}>
-          <Box sx={{ margin: '20px' }}>
-            <TextField error={employeeFirstNameError} helperText={employeeFirstNameError ? 'Field cannot be empty' : ''} label="Employee First Name" variant="outlined" onChange={(event) => setEmployeeFirstName(event.target.value)} value={employeeFirstName || ''} />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "stretch",
+          }}
+        >
+          <Box sx={{ margin: "20px" }}>
+            <TextField
+              error={employeeFirstNameError}
+              helperText={employeeFirstNameError ? "Field cannot be empty" : ""}
+              label="Employee First Name"
+              variant="outlined"
+              onChange={(event) => setEmployeeFirstName(event.target.value)}
+              value={employeeFirstName || ""}
+            />
           </Box>
-          <Box sx={{ margin: '20px' }}>
-            <TextField error={employeeLastNameError} helperText={employeeLastNameError ? 'Field cannot be empty' : ''} label="Employee Last Name" variant="outlined" onChange={(event) => setEmployeeLastName(event.target.value)} value={employeeLastName || ''} />
+          <Box sx={{ margin: "20px" }}>
+            <TextField
+              error={employeeLastNameError}
+              helperText={employeeLastNameError ? "Field cannot be empty" : ""}
+              label="Employee Last Name"
+              variant="outlined"
+              onChange={(event) => setEmployeeLastName(event.target.value)}
+              value={employeeLastName || ""}
+            />
           </Box>
-          <Box sx={{ margin: '20px', minWidth: '200px' }}>
+          <Box sx={{ margin: "20px", minWidth: "200px" }}>
             <FormControl fullWidth error={permissionTypeError}>
               <InputLabel id="type-select-label">Type</InputLabel>
               <Select
                 labelId="type-select-label"
                 label="Type"
-                value={permissionType || ''}
+                value={permissionType || ""}
                 onChange={(event) => setPermissionType(event.target.value)}
               >
-                {permissionTypes.map((type, index) =>
-                (
-                  <MenuItem key={index} value={type.id}>{type.description}</MenuItem>
+                {permissionTypes.map((type, index) => (
+                  <MenuItem key={index} value={type.id}>
+                    {type.description}
+                  </MenuItem>
                 ))}
               </Select>
-              {permissionTypeError && (<FormHelperText>Field cannot be empty</FormHelperText>)}
+              {permissionTypeError && (
+                <FormHelperText>Field cannot be empty</FormHelperText>
+              )}
             </FormControl>
           </Box>
-          <Box sx={{ margin: '20px', }}>
-            <Button variant="contained" onClick={save} sx={{ padding: '8px', minWidth: '200px' }}>Save</Button>
+          <Box sx={{ margin: "20px" }}>
+            <Button
+              variant="contained"
+              onClick={save}
+              sx={{ padding: "8px", minWidth: "200px" }}
+            >
+              Save
+            </Button>
           </Box>
         </Box>
       </Stack>

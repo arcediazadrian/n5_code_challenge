@@ -25,7 +25,7 @@ function CreateEditPermissionType({ refreshPermissionTypes }) {
   }, []);
 
   const getFormData = async () => {
-    if (routeParams && routeParams.permissionTypeId !== -1) {
+    if (routeParams && routeParams.permissionTypeId !== "-1") {
       const permissionResult = await axios.get(
         `${process.env.REACT_APP_PERMISSIONS_API_URL}/PermissionTypes/${routeParams.permissionTypeId}`
       );
