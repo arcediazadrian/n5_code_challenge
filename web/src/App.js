@@ -1,24 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import PermissionTypesList from "./pages/permissionTypes/PermissionTypesList";
 
 function App() {
+  const [permissionTypes, setPermissionTypes] = useState([]);
+
+  const getInitialData = async () => {
+    const permissionTypesResult = await axios.get(
+      `${process.env.REACT_APP_PERMISSIONS_API_URL}/PermissionTypes`
+    );
+
+    setPermissionTypes(permissionTypesResult.data);
+  };
+
+  useEffect(() => {
+    getInitialData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/permissionTypes"
+          element={<PermissionTypesList permissionTypes={permissionTypes} />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
