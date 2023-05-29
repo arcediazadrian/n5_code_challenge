@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
+import Layout from "../../components/Layout";
 
 import { useNavigate } from "react-router-dom";
 
@@ -26,57 +27,59 @@ function PermissionsList({ permissions }) {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "stretch",
-      }}
-    >
-      <Box sx={{ width: "60vw" }}>
-        {permissions.map((permission, index) => (
-          <Item key={index}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Box sx={{ flexGrow: 6 }}>
-                <Typography sx={{ fontSize: 32 }} color="text.primary">
-                  {`${permission.employeeFirstName} ${permission.employeeLastName}`}
-                </Typography>
-                <Typography variant="h5">
-                  {permission.permissionType.description}
-                </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                  {permission.grantedDate}
-                </Typography>
-              </Box>
+    <Layout title="Permissions">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "stretch",
+        }}
+      >
+        <Box sx={{ width: "60vw" }}>
+          {permissions.map((permission, index) => (
+            <Item key={index}>
               <Box
                 sx={{
-                  flexGrow: 1,
                   display: "flex",
                   flexDirection: "row",
-                  justifyContent: "flex-end",
-                  marginRight: "20px",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
-                <IconButton
-                  size="large"
-                  onClick={() => navigateToEdit(permission.id)}
+                <Box sx={{ flexGrow: 6 }}>
+                  <Typography sx={{ fontSize: 32 }} color="text.primary">
+                    {`${permission.employeeFirstName} ${permission.employeeLastName}`}
+                  </Typography>
+                  <Typography variant="h5">
+                    {permission.permissionType.description}
+                  </Typography>
+                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                    {permission.grantedDate}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    flexGrow: 1,
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "flex-end",
+                    marginRight: "20px",
+                  }}
                 >
-                  <EditIcon />
-                </IconButton>
+                  <IconButton
+                    size="large"
+                    onClick={() => navigateToEdit(permission.id)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </Box>
               </Box>
-            </Box>
-          </Item>
-        ))}
+            </Item>
+          ))}
+        </Box>
       </Box>
-    </Box>
+    </Layout>
   );
 }
 

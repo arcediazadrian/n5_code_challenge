@@ -3,6 +3,7 @@ import axios from "axios";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import PermissionsList from "./pages/permissions/PermissionsList";
+import CreateEditPermission from "./pages/permissions/CreateEditPermission";
 import PermissionTypesList from "./pages/permissionTypes/PermissionTypesList";
 import CreateEditPermissionType from "./pages/permissionTypes/CreateEditPermissionType";
 
@@ -26,6 +27,13 @@ function App() {
     getInitialData();
   }, []);
 
+  const refreshPermissions = async () => {
+    const updatedPermissions = await axios.get(
+      `${process.env.REACT_APP_PERMISSIONS_API_URL}/Permissions`
+    );
+    setPermissions(updatedPermissions.data);
+  };
+
   const refreshPermissionTypes = async () => {
     const updatedPermissionTypes = await axios.get(
       `${process.env.REACT_APP_PERMISSIONS_API_URL}/PermissionTypes`
@@ -36,6 +44,15 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route
+          path="/permissions/:permissionId"
+          element={
+            <CreateEditPermission
+              refreshPermissions={refreshPermissions}
+              permissionTypes={permissionTypes}
+            />
+          }
+        />
         <Route
           path="/permissions"
           element={<PermissionsList permissions={permissions} />}
