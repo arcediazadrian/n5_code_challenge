@@ -9,3 +9,7 @@
 
 ## Menu
 ![image](https://github.com/arcediazadrian/n5_code_challenge/assets/26807808/bb3481d3-7c61-4a15-99f4-89741bf71a2e)
+
+## Success/Error Message
+![image](https://github.com/arcediazadrian/n5_code_challenge/assets/26807808/eabc77c3-f15b-46d0-b50d-80f5b105e12e)
+
